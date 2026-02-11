@@ -1,7 +1,7 @@
 [project]
 name = "apscheduler-metrics"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Prometheus exporter for APScheduler metrics"
 requires-python = ">=3.9"
 dependencies = [
     "apscheduler>=3.11.0",

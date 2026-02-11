@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 
-class APSchedulerMetrics:
+class APSchedulerExporter:
     def __init__(self, scheduler, registry: Optional[CollectorRegistry] = None):
         self.scheduler = scheduler
         self.registry = registry or CollectorRegistry()

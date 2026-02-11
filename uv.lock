@@ -25,7 +25,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "apscheduler", specifier = ">=3.11.2" },
+    { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "prometheus-client", specifier = ">=0.24.1" },
 ]
 
