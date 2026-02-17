@@ -7,3 +7,20 @@ dependencies = [
     "apscheduler>=3.11.0",
     "prometheus-client>=0.24.1",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "ruff>=0.15.1",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "UP",
+    "B",
+    "SIM",
+    "I",
+    "N",
+]
