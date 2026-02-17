@@ -24,3 +24,7 @@ select = [
     "I",
     "N",
 ]
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*"]
+follow_untyped_imports = true
