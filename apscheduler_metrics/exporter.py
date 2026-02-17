@@ -2,7 +2,7 @@ import logging
 import time
 from typing import Optional
 
-from apscheduler.events import (  # type: ignore[import-not-found]
+from apscheduler.events import (  # type: ignore[import-untyped]
     EVENT_JOB_ADDED,
     EVENT_JOB_ERROR,
     EVENT_JOB_EXECUTED,
@@ -11,7 +11,12 @@ from apscheduler.events import (  # type: ignore[import-not-found]
     JobExecutionEvent,
     JobSubmissionEvent,
 )
-from prometheus_client import CollectorRegistry, Counter, Gauge, start_http_server  # type: ignore[import-not-found]
+from prometheus_client import (  # type: ignore[import-not-found]
+    CollectorRegistry,
+    Counter,
+    Gauge,
+    start_http_server,
+)
 
 logger = logging.getLogger(__name__)
 
