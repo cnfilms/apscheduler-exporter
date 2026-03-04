@@ -2,6 +2,11 @@
 name = "apscheduler-metrics"
 version = "0.1.0"
 description = "A Prometheus exporter for APScheduler metrics"
+readme = "README.md"
+authors = [
+    { name = "CNFilms", email = "technique@cinego.net" }
+]
+keywords = ["apscheduler", "prometheus", "metrics", "monitoring"]
 requires-python = ">=3.9"
 dependencies = [
     "apscheduler>=3.11.0",
@@ -28,3 +33,7 @@ select = [
 [[tool.mypy.overrides]]
 module = ["apscheduler.*"]
 follow_untyped_imports = true
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
