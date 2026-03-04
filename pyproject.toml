@@ -1,5 +1,5 @@
 [project]
-name = "apscheduler-metrics"
+name = "apscheduler-exporter"
 version = "0.1.0"
 description = "A Prometheus exporter for APScheduler metrics"
 readme = "README.md"
