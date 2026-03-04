@@ -10,7 +10,8 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      contents: write   # for GitHub release
+      id-token: write   # for PyPI trusted publisher (OIDC)
     steps:
       - uses: actions/checkout@v5
         with:
