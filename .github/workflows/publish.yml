@@ -9,9 +9,15 @@ jobs:
   release:
     name: Publish to PyPI
     runs-on: ubuntu-latest
+
     permissions:
       contents: write   # for GitHub release
       id-token: write   # for PyPI trusted publisher (OIDC)
+
+    environment:
+      name: pypi
+      url: https://pypi.org/project/apscheduler-exporter
+
     steps:
       - uses: actions/checkout@v5
         with:
