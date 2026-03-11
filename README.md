@@ -20,10 +20,13 @@ scheduler_exporter.start_http_server()
 
 
 # Metrics
-
 Name     | Description                                       | Type
 ---------|---------------------------------------------------|----
 apscheduler_job_done_total | Sent when a job is done.                          | Counter
 apscheduler_job_errors_total | Sent when a job is failed.                        | Counter
 apscheduler_job_missed_total | Sent when a job is missed.                        | Counter
 apscheduler_job_last_duration_seconds | The runtime (seconds) for the last job execution. | Gauge
+
+# Dashboard
+See [Grafana Dashboard](docs/grafana/dashboard.json) to import the example dashboard in your instance
+![apscheduler-exporter-dashboard-example](docs/images/dashboard-example.png)
