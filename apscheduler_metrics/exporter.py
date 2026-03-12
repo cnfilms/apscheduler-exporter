@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Optional
+from typing import Optional, Callable
 
 from apscheduler.events import (
     EVENT_JOB_ADDED,
@@ -22,11 +22,19 @@ logger = logging.getLogger(__name__)
 
 
 class APSchedulerExporter:
-    def __init__(self, scheduler, registry: Optional[CollectorRegistry] = None):
+    def __init__(
+        self,
+        scheduler,
+        registry: Optional[CollectorRegistry] = None,
+        job_name_extractor: Optional[Callable] = None,
+    ):
         self.scheduler = scheduler
         self.registry = registry or CollectorRegistry()
         self._http_server_started = False
         self._jobs_cache: dict = {}
+        self._job_name_extractor: Callable = job_name_extractor or (
+            lambda job_id: job_id
+        )
 
         self.event_job_metrics = {
             EVENT_JOB_EXECUTED: Counter(
@@ -65,11 +73,10 @@ class APSchedulerExporter:
         )
 
     def _on_job_started(self, event: JobSubmissionEvent):
-        if event.job_id not in self._jobs_cache and (
-            job := self.scheduler.get_job(event.job_id)
-        ):
+        if event.job_id not in self._jobs_cache:
+            job = self.scheduler.get_job(event.job_id)
             self._jobs_cache[event.job_id] = {
-                "job_name": job.name,
+                "job_name": job.name if job else self._job_name_extractor(event.job_id),
                 "start_time": time.time(),
             }
 
