@@ -13,6 +13,9 @@ dependencies = [
     "prometheus-client>=0.24.1",
 ]
 
+[project.urls]
+Source = "https://github.com/cnfilms/apscheduler-exporter"
+
 [dependency-groups]
 dev = [
     "mypy>=1.19.1",
