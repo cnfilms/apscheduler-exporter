@@ -23,9 +23,10 @@ logger = logging.getLogger(__name__)
 
 class APSchedulerExporter:
     """Attributes:
-        scheduler: The APScheduler instance to monitor.
-        registry (CollectorRegistry): Prometheus registry used to expose metrics.
+    scheduler: The APScheduler instance to monitor.
+    registry (CollectorRegistry): Prometheus registry used to expose metrics.
     """
+
     def __init__(
         self,
         scheduler,
@@ -33,11 +34,11 @@ class APSchedulerExporter:
         job_name_extractor: Optional[Callable] = None,
     ):
         """Args:
-            scheduler: The APScheduler instance to monitor.
-            registry (Optional[CollectorRegistry]): Prometheus registry to
-                register metrics into.
-            job_name_extractor (Optional[Callable]): A callable that takes a
-                job ID (str) and returns a human-readable metric label (str).
+        scheduler: The APScheduler instance to monitor.
+        registry (Optional[CollectorRegistry]): Prometheus registry to
+            register metrics into.
+        job_name_extractor (Optional[Callable]): A callable that takes a
+            job ID (str) and returns a human-readable metric label (str).
         """
         self.scheduler = scheduler
         self.registry = registry or CollectorRegistry()
