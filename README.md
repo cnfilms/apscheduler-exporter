@@ -28,5 +28,5 @@ apscheduler_job_missed_total | Sent when a job is missed.                       
 apscheduler_job_last_duration_seconds | The runtime (seconds) for the last job execution. | Gauge
 
 # Dashboard
-See [Grafana Dashboard](docs/grafana/dashboard.json) to import the example dashboard in your instance
+See [Grafana Dashboard](https://github.com/cnfilms/apscheduler-exporter/blob/main/docs/grafana/dashboard.json) to import the example dashboard in your instance
 ![apscheduler-exporter-dashboard-example](docs/images/dashboard-example.png)
