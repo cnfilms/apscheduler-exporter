@@ -29,6 +29,9 @@ jobs:
       - name: Install the project
         run: uv sync --all-groups
 
+      - name: Bump version
+        run: uv version ${GITHUB_REF_NAME#v}
+
       - name: Build wheel
         run: uv build
 
@@ -38,5 +41,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           files: dist/*
