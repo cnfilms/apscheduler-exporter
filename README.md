@@ -13,6 +13,39 @@ from apscheduler_metrics import APSchedulerExporter
 scheduler_exporter = APSchedulerExporter(scheduler=your_scheduler)
 scheduler_exporter.start_http_server()
 ```
+### Parameters : 
+#### Disable metrics collecter for certain jobs
+- Considered as private/dummy (with "_" prefix)
+```python
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler_metrics import APSchedulerExporter
+
+def task():
+    pass
+
+scheduler = BackgroundScheduler()
+
+scheduler.add_job(task, 'interval', seconds=10, id='_your_task')
+
+scheduler_exporter = APSchedulerExporter(scheduler=scheduler)
+scheduler_exporter.start_http_server()
+```
+- By ids (explicitly)
+```python
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler_metrics import APSchedulerExporter
+
+def task():
+    pass
+
+scheduler = BackgroundScheduler()
+
+scheduler.add_job(task, 'interval', seconds=10, id='your_task')
+
+scheduler_exporter = APSchedulerExporter(scheduler=scheduler, excluded_jobs_by_id=['your_task'])
+scheduler_exporter.start_http_server()
+```
+
 
 ## Configuration
 - port (default value: 8888)
