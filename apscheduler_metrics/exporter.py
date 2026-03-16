@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Optional, Callable
+from typing import Callable, Optional
 
 from apscheduler.events import (
     EVENT_JOB_ADDED,
@@ -32,6 +32,7 @@ class APSchedulerExporter:
         scheduler,
         registry: Optional[CollectorRegistry] = None,
         job_name_extractor: Optional[Callable] = None,
+        excluded_jobs_by_id: Optional[list] = None,
     ):
         """Args:
         scheduler: The APScheduler instance to monitor.
@@ -39,9 +40,12 @@ class APSchedulerExporter:
             register metrics into.
         job_name_extractor (Optional[Callable]): A callable that takes a
             job ID (str) and returns a human-readable metric label (str).
+        excluded_jobs_by_id (Optional[list]): A list of job ids to exclude
+            from metrics collection.
         """
         self.scheduler = scheduler
         self.registry = registry or CollectorRegistry()
+        self.excluded_jobs_by_id = excluded_jobs_by_id or []
         self._http_server_started = False
         self._jobs_cache: dict = {}
         self._job_name_extractor: Callable = job_name_extractor or (
@@ -85,6 +89,9 @@ class APSchedulerExporter:
         )
 
     def _on_job_started(self, event: JobSubmissionEvent):
+        if self._ignored_job(event.job_id):
+            logger.debug(f"Job metrics skiped for {event.job_id}")
+            return
         if event.job_id not in self._jobs_cache:
             job = self.scheduler.get_job(event.job_id)
             self._jobs_cache[event.job_id] = {
@@ -93,6 +100,9 @@ class APSchedulerExporter:
             }
 
     def _on_job_terminated(self, event: JobExecutionEvent):
+        if self._ignored_job(event.job_id):
+            logger.debug(f"Job metrics skiped for {event.job_id}")
+            return
         if job_data := self._jobs_cache.get(event.job_id):
             self.event_job_metrics[event.code].labels(
                 job_name=job_data["job_name"]
@@ -102,6 +112,9 @@ class APSchedulerExporter:
             )
 
             del self._jobs_cache[event.job_id]
+
+    def _ignored_job(self, job_id: str) -> bool:
+        return job_id.startswith("_") or job_id in self.excluded_jobs_by_id
 
     def start_http_server(self, port: int = 8888, addr: str = "0.0.0.0"):
         if self._http_server_started:
