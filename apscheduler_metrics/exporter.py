@@ -15,6 +15,7 @@ from prometheus_client import (
     CollectorRegistry,
     Counter,
     Gauge,
+    Summary,
     start_http_server,
 )
 
@@ -80,6 +81,13 @@ class APSchedulerExporter:
             registry=self.registry,
         )
 
+        self.job_duration_summary = Summary(
+            "apscheduler_job_duration_seconds",
+            "Job execution duration in seconds",
+            ["job_name"],
+            registry=self.registry,
+        )
+
         self.scheduler.add_listener(
             self._on_job_started, EVENT_JOB_ADDED | EVENT_JOB_SUBMITTED
         )
@@ -107,8 +115,12 @@ class APSchedulerExporter:
             self.event_job_metrics[event.code].labels(
                 job_name=job_data["job_name"]
             ).inc()
+            duration = time.time() - job_data["start_time"]
             self.last_job_duration_metrics.labels(job_name=job_data["job_name"]).set(
-                time.time() - job_data["start_time"]
+                duration
+            )
+            self.job_duration_summary.labels(job_name=job_data["job_name"]).observe(
+                duration
             )
 
             del self._jobs_cache[event.job_id]

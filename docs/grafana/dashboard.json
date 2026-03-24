@@ -479,6 +479,49 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean Duration (s)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 10
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 120
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -552,6 +595,17 @@
           "instant": true,
           "legendFormat": "__auto",
           "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[5m]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[5m])",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "E"
         }
       ],
       "title": "Job Summary",
@@ -565,7 +619,8 @@
                 "Value #A",
                 "Value #B",
                 "Value #C",
-                "Value #D"
+                "Value #D",
+                "Value #E"
               ]
             }
           }
@@ -582,6 +637,7 @@
               "Value #B": "Errors",
               "Value #C": "Missed",
               "Value #D": "Last exec duration (s)",
+              "Value #E": "Mean Duration (s)",
               "job_name": "Job"
             }
           }
@@ -696,6 +752,15 @@
           "expr": "apscheduler_job_last_duration_seconds{instance=~\"$instance\"}",
           "legendFormat": "{{job_name}}",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "legendFormat": "{{job_name}} (mean)",
+          "refId": "B"
         }
       ],
       "title": "Execution Duration Over Time",
@@ -907,6 +972,102 @@
         }
       ],
       "title": "Errors Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Duration (s)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "legendFormat": "{{job_name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Mean Duration Over Time",
       "type": "timeseries"
     }
   ],
