@@ -603,7 +603,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[5m]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[5m])",
+          "expr": "apscheduler_job_duration_seconds_sum{instance=~\"$instance\"} / apscheduler_job_duration_seconds_count{instance=~\"$instance\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -776,7 +776,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "expr": "apscheduler_job_duration_seconds_sum{instance=~\"$instance\"} / apscheduler_job_duration_seconds_count{instance=~\"$instance\"}",
           "legendFormat": "{{job_name}} (mean)",
           "refId": "B"
         }
@@ -1053,7 +1053,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 37
       },
       "id": 14,
       "options": {
@@ -1080,7 +1080,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "expr": "apscheduler_job_duration_seconds_sum{instance=~\"$instance\"} / apscheduler_job_duration_seconds_count{instance=~\"$instance\"}",
           "legendFormat": "{{job_name}}",
           "refId": "A"
         }
@@ -1089,7 +1089,8 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "1m",
+  "preload": false,
+  "refresh": "30s",
   "schemaVersion": 41,
   "tags": [
     "apscheduler",
@@ -1101,7 +1102,10 @@
       {
         "allValue": ".*",
         "allowCustomValue": false,
-        "current": {},
+        "current": {
+          "text": "",
+          "value": ""
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -1125,13 +1129,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "APScheduler — Job Monitoring",
   "uid": "apscheduler-jobs-monitoring",
-  "version": 16,
+  "version": 22,
   "weekStart": ""
 }
