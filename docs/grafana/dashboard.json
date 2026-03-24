@@ -479,11 +479,54 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean Duration (s)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 10
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 120
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 6
@@ -502,7 +545,7 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
+            "desc": true,
             "displayName": "Executions"
           }
         ]
@@ -514,6 +557,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "apscheduler_job_done_total{instance=~\"$instance\"}",
           "format": "table",
           "instant": true,
@@ -525,6 +569,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "apscheduler_job_errors_total{instance=~\"$instance\"} or (0 * apscheduler_job_done_total{instance=~\"$instance\"})",
           "format": "table",
           "instant": true,
@@ -552,6 +597,17 @@
           "instant": true,
           "legendFormat": "__auto",
           "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[5m]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[5m])",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "E"
         }
       ],
       "title": "Job Summary",
@@ -561,11 +617,13 @@
           "options": {
             "include": {
               "names": [
+                "instance",
                 "job_name",
                 "Value #A",
                 "Value #B",
                 "Value #C",
-                "Value #D"
+                "Value #D",
+                "Value #E"
               ]
             }
           }
@@ -577,11 +635,27 @@
         {
           "id": "organize",
           "options": {
+            "excludeByName": {
+              "Value #D": false,
+              "job_name": false
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "Value #D": 5,
+              "instance": 1,
+              "job_name": 0
+            },
+            "orderByMode": "manual",
             "renameByName": {
               "Value #A": "Executions",
               "Value #B": "Errors",
               "Value #C": "Missed",
               "Value #D": "Last exec duration (s)",
+              "Value #E": "Mean Duration (s)",
+              "instance": "Server",
               "job_name": "Job"
             }
           }
@@ -595,7 +669,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 19
       },
       "id": 102,
       "panels": [],
@@ -667,7 +741,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 20
       },
       "id": 10,
       "options": {
@@ -696,6 +770,15 @@
           "expr": "apscheduler_job_last_duration_seconds{instance=~\"$instance\"}",
           "legendFormat": "{{job_name}}",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "legendFormat": "{{job_name}} (mean)",
+          "refId": "B"
         }
       ],
       "title": "Execution Duration Over Time",
@@ -707,7 +790,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 28
       },
       "id": 103,
       "panels": [],
@@ -775,7 +858,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 29
       },
       "id": 11,
       "options": {
@@ -875,7 +958,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 29
       },
       "id": 12,
       "options": {
@@ -908,9 +991,105 @@
       ],
       "title": "Errors Over Time",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Duration (s)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rate(apscheduler_job_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]) / rate(apscheduler_job_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval])",
+          "legendFormat": "{{job_name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Mean Duration Over Time",
+      "type": "timeseries"
     }
   ],
-  "refresh": "30s",
+  "refresh": "1m",
   "schemaVersion": 41,
   "tags": [
     "apscheduler",
@@ -921,18 +1100,22 @@
     "list": [
       {
         "allValue": ".*",
+        "allowCustomValue": false,
         "current": {},
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "includeAll": true,
+        "definition": "label_values(apscheduler_job_done_total{type=\"prod\"},instance)",
+        "includeAll": false,
         "label": "Instance",
+        "multi": true,
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(apscheduler_job_done_total, instance)",
-          "refId": "StandardVariableQuery"
+          "qryType": 1,
+          "query": "label_values(apscheduler_job_done_total{type=\"prod\"},instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
         "regex": "",
@@ -942,13 +1125,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "APScheduler — Job Monitoring",
   "uid": "apscheduler-jobs-monitoring",
-  "version": 4,
+  "version": 16,
   "weekStart": ""
 }
