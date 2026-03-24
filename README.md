@@ -63,7 +63,7 @@ apscheduler_job_duration_seconds | Job execution duration in seconds (exposes `_
 
 Mean duration PromQL:
 ```promql
-rate(apscheduler_job_duration_seconds_sum[5m]) / rate(apscheduler_job_duration_seconds_count[5m])
+apscheduler_job_duration_seconds_sum / apscheduler_job_duration_seconds_count
 ```
 
 # Dashboard
