@@ -526,7 +526,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 6
@@ -545,7 +545,7 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
+            "desc": true,
             "displayName": "Executions"
           }
         ]
@@ -557,6 +557,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "apscheduler_job_done_total{instance=~\"$instance\"}",
           "format": "table",
           "instant": true,
@@ -568,6 +569,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "apscheduler_job_errors_total{instance=~\"$instance\"} or (0 * apscheduler_job_done_total{instance=~\"$instance\"})",
           "format": "table",
           "instant": true,
@@ -615,6 +617,7 @@
           "options": {
             "include": {
               "names": [
+                "instance",
                 "job_name",
                 "Value #A",
                 "Value #B",
@@ -632,12 +635,27 @@
         {
           "id": "organize",
           "options": {
+            "excludeByName": {
+              "Value #D": false,
+              "job_name": false
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "Value #D": 5,
+              "instance": 1,
+              "job_name": 0
+            },
+            "orderByMode": "manual",
             "renameByName": {
               "Value #A": "Executions",
               "Value #B": "Errors",
               "Value #C": "Missed",
               "Value #D": "Last exec duration (s)",
               "Value #E": "Mean Duration (s)",
+              "instance": "Server",
               "job_name": "Job"
             }
           }
@@ -651,7 +669,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 19
       },
       "id": 102,
       "panels": [],
@@ -723,7 +741,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 20
       },
       "id": 10,
       "options": {
@@ -772,7 +790,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 28
       },
       "id": 103,
       "panels": [],
@@ -840,7 +858,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 29
       },
       "id": 11,
       "options": {
@@ -940,7 +958,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 29
       },
       "id": 12,
       "options": {
@@ -1071,7 +1089,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "30s",
+  "refresh": "1m",
   "schemaVersion": 41,
   "tags": [
     "apscheduler",
@@ -1082,18 +1100,22 @@
     "list": [
       {
         "allValue": ".*",
+        "allowCustomValue": false,
         "current": {},
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "includeAll": true,
+        "definition": "label_values(apscheduler_job_done_total{type=\"prod\"},instance)",
+        "includeAll": false,
         "label": "Instance",
+        "multi": true,
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(apscheduler_job_done_total, instance)",
-          "refId": "StandardVariableQuery"
+          "qryType": 1,
+          "query": "label_values(apscheduler_job_done_total{type=\"prod\"},instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
         "regex": "",
@@ -1103,13 +1125,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "APScheduler — Job Monitoring",
   "uid": "apscheduler-jobs-monitoring",
-  "version": 4,
+  "version": 16,
   "weekStart": ""
 }
