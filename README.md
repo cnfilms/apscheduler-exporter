@@ -61,11 +61,7 @@ apscheduler_job_missed_total | Sent when a job is missed.                       
 apscheduler_job_last_duration_seconds | The runtime (seconds) for the last job execution. | Gauge
 apscheduler_job_duration_seconds | Job execution duration in seconds (exposes `_sum` and `_count` for mean calculation). | Summary
 
-Mean duration PromQL:
-```promql
-apscheduler_job_duration_seconds_sum / apscheduler_job_duration_seconds_count
-```
 
 # Dashboard
 See [Grafana Dashboard](https://github.com/cnfilms/apscheduler-exporter/blob/main/docs/grafana/dashboard.json) to import the example dashboard in your instance
-![apscheduler-exporter-dashboard-example](docs/images/dashboard-example.png)
+![apscheduler-exporter-dashboard-example](https://github.com/cnfilms/apscheduler-exporter/raw/main/docs/images/dashboard-example.png)
